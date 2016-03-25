@@ -1,0 +1,12 @@
+language: php
+
+sudo: required
+
+before_script:
+  - |
+    which php
+
+script:
+  - |
+    echo sore
+    echo dore
