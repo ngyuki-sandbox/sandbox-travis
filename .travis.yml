@@ -1,27 +1,28 @@
 language: php
 
-#sudo: required
 sudo: false
 
+php:
+  - 7.0
+
+services:
+  - mysql
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+env:
+  global:
+    - MYSQL_HOST=127.0.0.1
+    - MYSQL_PORT=3306
+    - MYSQL_USER=root
+    - MYSQL_PASSWORD=""
+    - MYSQL_DATABASE=myapp_test
+
 before_script:
-  - git clone https://github.com/ngyuki/phpenv-composer.git ~/.phpenv/plugins/phpenv-composer
-  - rm -f ~/.phpenv/versions/*/etc/conf.d/xdebug.ini
-  - phpenv rehash
+  - composer install --prefer-dist
+  - mysql -e 'CREATE DATABASE myapp_test'
 
 script:
-  - which composer
-  - phpenv which composer
-  - composer --version
-  - ls -l "$(phpenv prefix)/composer/composer.phar"
-
-  - composer config -g home
-  - test "$(composer config -g home)" == "$(phpenv prefix)/composer"
-
-  - composer config -g cache-dir
-  - test "$(composer config -g cache-dir)" == "$HOME/.composer/cache"
-
-  - composer global require phpunit/phpunit
-  - phpenv rehash
-
-  - phpenv which phpunit
-  - test "$(phpenv which phpunit)" == "$(phpenv prefix)/composer/vendor/bin/phpunit"
+  - vendor/bin/phpunit --colors
